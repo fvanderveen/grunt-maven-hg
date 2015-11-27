@@ -74,18 +74,25 @@ module.exports = function (grunt) {
 						done(err);
 					}
 					else {
-						grunt.util.spawn({ cmd: 'hg', args: ['ci', '-m', '[release] Prepare release of ' + pkg.name + '-' + releaseVersion] }, function (err, result, code) {
-							grunt.verbose.write(result.stdout + "\n");
-							
-							if (err) {
-								grunt.log.error().error("Version commit failed, exit code " + code + ".");
-							}
-							else {
-								grunt.verbose.ok();
-							}
-							
+						var commit = grunt.option('commit') || "true";
+						
+						if (commit === "true") {
+							grunt.util.spawn({ cmd: 'hg', args: ['ci', '-m', '[release] Prepare release of ' + pkg.name + '-' + releaseVersion] }, function (err, result, code) {
+								grunt.verbose.write(result.stdout + "\n");
+								
+								if (err) {
+									grunt.log.error().error("Version commit failed, exit code " + code + ".");
+								}
+								else {
+									grunt.verbose.ok();
+								}
+								
+								done(err);
+							});
+						}
+						else {
 							done(err);
-						});
+						}
 					}
 				});
 			}
