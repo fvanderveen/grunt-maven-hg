@@ -74,9 +74,9 @@ module.exports = function (grunt) {
 						done(err);
 					}
 					else {
-						var commit = grunt.option('commit') || "true";
+						var commit = grunt.option('commit');
 						
-						if (commit === "true") {
+						if (commit === true) {
 							grunt.util.spawn({ cmd: 'hg', args: ['ci', '-m', '[release] Prepare release of ' + pkg.name + '-' + releaseVersion] }, function (err, result, code) {
 								grunt.verbose.write(result.stdout + "\n");
 								
@@ -236,9 +236,9 @@ module.exports = function (grunt) {
 		grunt.task.run("mvn:package");
 		grunt.task.run("mvn:upload");
 		
-		var commit = grunt.option('commit') || "true";
+		var commit = grunt.option('commit');
 		
-		if (commit === "true") {
+		if (commit === true) {
 			grunt.task.run("mvn:tag-release");
 		}
 	});
