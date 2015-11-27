@@ -223,5 +223,16 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-prompt");
 	
 	grunt.registerTask('mvn:deploy', ["mvn:preprocess:snapshot", "mvn:package", "mvn:upload"]);
-	grunt.registerTask('mvn:release', ["mvn:prepare-release", "mvn:preprocess:release", "mvn:package", "mvn:upload", "mvn:tag-release"]);
+	grunt.registerTask('mvn:release', function() {
+		grunt.task.run("mvn:prepare-release");
+		grunt.task.run("mvn:preprocess:release");
+		grunt.task.run("mvn:package");
+		grunt.task.run("mvn:upload");
+		
+		var commit = grunt.option('commit') || "true";
+		
+		if (commit === "true") {
+			grunt.task.run("mvn:tag-release");
+		}
+	});
 };
