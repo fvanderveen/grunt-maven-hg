@@ -1,7 +1,7 @@
 {
   "name": "grunt-maven-hg",
   "description": "Grunt module for deploying and releasing a node project as zip using maven and mercurial",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "homepage": "https://github.com/fvanderveen/grunt-maven-hg",
   "author": {
     "name": "Fabian van der Veen",
