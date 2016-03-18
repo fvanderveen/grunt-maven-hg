@@ -103,17 +103,23 @@ module.exports = function (grunt) {
 			grunt.config.set("mvn.version", grunt.config.get("mvn.version") + "-SNAPSHOT");
 		}
 		
-		grunt.config.set("mvn.file", grunt.config.get("mvn.artifactId") + "-" + grunt.config.get("mvn.version") + ".zip");
+		var buildDirectory = grunt.config.get("mvn.build.directory") || ".";
+		grunt.config.set("mvn.file", buildDirectory + "/" + grunt.config.get("mvn.artifactId") + "-" + grunt.config.get("mvn.version") + ".zip");
 		
 		grunt.event.emit("mvn.generate-sources", grunt.config.get("mvn.version"));
 	});
 	
-	grunt.registerTask('mvn:package', function () {
+	grunt.registerTask('mvn:package', function (target) {
 		var zip = new ZipWriter();
 		
 		var seenFiles = [];
 		var sources = grunt.config.get("mvn.sources");
 		var basePath = grunt.config.get("mvn.basePath") || "";
+		
+		var additionalSources = grunt.config.get("mvn." + target + ".sources");
+		if (additionalSources) {
+			sources = sources.concat(additionalSources);
+		}
 		
 		grunt.verbose.write(sources);
 		sources.forEach(function (source) {
@@ -229,11 +235,11 @@ module.exports = function (grunt) {
 	
 	grunt.loadNpmTasks("grunt-prompt");
 	
-	grunt.registerTask('mvn:deploy', ["mvn:preprocess:snapshot", "mvn:package", "mvn:upload"]);
+	grunt.registerTask('mvn:deploy', ["mvn:preprocess:snapshot", "mvn:package:snapshot", "mvn:upload"]);
 	grunt.registerTask('mvn:release', function() {
 		grunt.task.run("mvn:prepare-release");
 		grunt.task.run("mvn:preprocess:release");
-		grunt.task.run("mvn:package");
+		grunt.task.run("mvn:package:release");
 		grunt.task.run("mvn:upload");
 		
 		var commit = grunt.option('commit');
